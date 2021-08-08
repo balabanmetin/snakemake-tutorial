@@ -16,11 +16,11 @@ Clone this repository and cd to it:
 
 Then create a conda environment for this tutorial:
 
-`mamba create `
+`mamba create -c conda-forge -c bioconda -n snakeTutorial snakemake-minimal famsa`
 
 Activate conda environment
 
-`conda activate snakemakeTutorial`
+`conda activate snakeTutorial`
 
 
-It would be recommended to use a shared node (16 cores) in expanse for this tutorial since we will be running stuff. 
+It would be recommended to use a shared node (16 cores) in Expanse for this tutorial since we will be running stuff. 
