@@ -1,0 +1,14 @@
+# vim: set ft=python:
+
+rule all:
+    input: "alignments/p0037/aln.fa"
+
+
+rule align:
+    input: "data/sequences/{gene}.fasta",
+    output: "alignments/{gene}/aln.fa"
+    threads: 1
+    shell:
+        """
+            famsa -t {threads} {input} {output}
+        """

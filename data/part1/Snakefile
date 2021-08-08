@@ -1,0 +1,21 @@
+# vim: set ft=python:
+
+GENES=open("data/gene_names.txt").read().splitlines()
+
+rule all:
+    input: expand("alignments/{gene}/aln.fa", gene=GENES)
+
+rule clean:
+    shell: 
+        """
+            rm -r alignments
+        """
+
+rule align:
+    input: "data/sequences/{gene}.fasta",
+    output: "alignments/{gene}/aln.fa"
+    threads: 1
+    shell:
+        """
+            famsa -t {threads} {input} {output}
+        """
