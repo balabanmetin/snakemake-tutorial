@@ -2,6 +2,8 @@
 
 Snakemake is a python based workflow management tool. It's very useful when you have a project where you chain a bunch of tools to get a result (e.g. benchmarking your software) and some parts must be distributed in HPC. It also prevents unneccessary re-running.
 
+It would be recommended to use a shared node (16 cores) in Expanse for this tutorial since we will be running stuff.
+
 ### Installation
 
 Requirements: Python and conda
@@ -22,5 +24,4 @@ Activate conda environment
 
 `conda activate snakeTutorial`
 
-
-It would be recommended to use a shared node (16 cores) in Expanse for this tutorial since we will be running stuff. 
+We are ready to go!
