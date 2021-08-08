@@ -1,0 +1,35 @@
+# vim: set ft=python:
+
+GENES=open("data/gene_names.txt").read().splitlines()
+
+rule all:
+    input: expand("alignments/{gene}/RAxML_bestTree.RUN", gene=GENES)
+
+rule clean:
+    shell: 
+        """
+            rm -r alignments
+        """
+
+
+rule gtree_infer:
+    input: "alignments/{g}/aln.fa"
+    output: "alignments/{g}/RAxML_bestTree.RUN"
+    threads: 4
+    log: out="alignments/{g}/log.out", err= "alignments/{g}/log.err"
+    shell:
+        """
+            module load cpu/0.15.4  gcc/10.2.0  openmpi/4.0.4
+            module load raxml/8.2.12
+            raxmlHPC-PTHREADS-SSE3 -s {input} -T {threads} -m GTRCAT -n RUN -p 12345 -w `realpath alignments/{wildcards.g}` > {log.out} 2> {log.err}
+        """
+
+
+rule align:
+    input: "data/sequences/{gene}.fasta",
+    output: "alignments/{gene}/aln.fa"
+    threads: 4
+    shell:
+        """
+            famsa -t {threads} {input} {output}
+        """

@@ -8,7 +8,7 @@ rule all:
 rule align:
     input: "data/sequences/{gene}.fasta",
     output: "alignments/{gene}/aln.fa"
-    threads: 1
+    threads: 4
     shell:
         """
             famsa -t {threads} {input} {output}
