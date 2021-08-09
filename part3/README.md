@@ -7,7 +7,7 @@ In the profile `config.yaml`, we describe the details of how a job should be run
 
 If you want to deviate from default number of cpus and memory for a specific rule, you can add a statement like this:
 
-`resources: mem_gb:16`
+`resources: mem_mb:10000, cpus=10`
 
 Check everything is setup correctly by printing the execution plan.
 
