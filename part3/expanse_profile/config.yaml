@@ -1,0 +1,10 @@
+#use-singularity: true
+#singularity-prefix: ../00container
+#singularity-args: '-B $PWD:/data,/scratch/balaban/job_$SLURM_JOB_ID:/tmp --pwd /data'
+restart-times: 1
+max-jobs-per-second: 1
+latency-wait: 120
+keep-going: true
+cluster: 'sbatch --ntasks-per-node={resources.cpus} --exclude=exp-1-01 --mem={resources.mem_mb} --partition=shared --time={resources.time_min} -A uot138 --nodes=1 -e /dev/null -o /dev/null'
+default-resources: [cpus=4, mem_mb=7000, time_min=2880, tmpdir="/tmp"]
+jobs: 500

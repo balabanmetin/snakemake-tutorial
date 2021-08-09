@@ -1,0 +1,47 @@
+# vim: set ft=python:
+
+GENES=open("data/gene_names.txt").read().splitlines()
+
+localrules: all, clean
+
+rule all:
+    input: "trees/astral_mp.nwk"
+    
+rule clean:
+    shell: 
+        """
+            rm -r alignments trees
+        """
+
+rule stree_infer:
+    input: expand("alignments/{gene}/RAxML_bestTree.RUN", gene=GENES)
+    output: st = "trees/astral_mp.nwk", allgtrees = "trees/all_gene_trees.nwk"
+    log: out="trees/astral.out", err="trees/astral.err"
+    shell:
+        """
+            cat {input} >  {output.allgtrees}
+            java -D"java.library.path=Astral/lib" -jar Astral/astral.5.15.4.jar -i {output.allgtrees} -o {output.st}  > {log.out} 2> {log.err}
+        """
+
+
+rule gtree_infer:
+    input: "alignments/{g}/aln.fa"
+    output: "alignments/{g}/RAxML_bestTree.RUN"
+    threads: 4
+    log: out="alignments/{g}/log.out", err= "alignments/{g}/log.err"
+    shell:
+        """
+            module load cpu/0.15.4  gcc/10.2.0  openmpi/4.0.4
+            module load raxml/8.2.12
+            raxmlHPC-PTHREADS-SSE3 -s {input} -T {threads} -m GTRCAT -n RUN -p 12345 -w `realpath alignments/{wildcards.g}` > {log.out} 2> {log.err}
+        """
+
+
+rule align:
+    input: "data/sequences/{gene}.fasta",
+    output: "alignments/{gene}/aln.fa"
+    threads: 4
+    shell:
+        """
+            famsa -t {threads} {input} {output}
+        """
