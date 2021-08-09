@@ -4,7 +4,7 @@ GENES=open("data/gene_names.txt").read().splitlines()
 
 rule all:
     input: "trees/astral_mp.nwk"
-    
+
 rule clean:
     shell: 
         """
@@ -18,7 +18,7 @@ rule stree_infer:
     shell:
         """
             cat {input} >  {output.allgtrees}
-            java -D"java.library.path=../Astral/lib" -jar ../Astral/astral.5.15.4.jar -i {output.allgtrees} -o {output.st} > {log.out} 2> {log.err}
+            java -D"java.library.path=Astral/lib" -jar Astral/astral.5.15.4.jar -i {output.allgtrees} -o {output.st} > {log.out} 2> {log.err}
         """
 
 
@@ -27,10 +27,11 @@ rule gtree_infer:
     output: "alignments/{g}/RAxML_bestTree.RUN"
     threads: 4
     log: out="alignments/{g}/log.out", err= "alignments/{g}/log.err"
-    singularity: "docker://chrishah/raxml-docker:8.2.12"
     shell:
         """
-            raxml -s {input} -T {threads} -m GTRCAT -n RUN -p 12345 -w `realpath alignments/{wildcards.g}` > {log.out} 2> {log.err}
+            module load cpu/0.15.4  gcc/10.2.0  openmpi/4.0.4
+            module load raxml/8.2.12
+            raxmlHPC-PTHREADS-SSE3 -s {input} -T {threads} -m GTRCAT -n RUN -p 12345 -w `realpath alignments/{wildcards.g}` > {log.out} 2> {log.err}
         """
 
 
