@@ -17,10 +17,12 @@ rule stree_infer:
     input: expand("alignments/{gene}/RAxML_bestTree.RUN", gene=GENES)
     output: st = "trees/astral_mp.nwk", allgtrees = "trees/all_gene_trees.nwk"
     log: out="trees/astral.out", err="trees/astral.err"
+    resources: cpus=10, mem_mb=10000
     shell:
+        # intentiaonal typo. instead of -Xmx, I wrote -XmX. see what happens
         """
             cat {input} >  {output.allgtrees}
-            java -D"java.library.path=Astral/lib" -jar Astral/astral.5.15.4.jar -i {output.allgtrees} -o {output.st}  > {log.out} 2> {log.err}
+            java -XmX{resources.mem_mb}M -D"java.library.path=Astral/lib" -jar Astral/astral.5.15.4.jar -i {output.allgtrees} -o {output.st} -T {resources.cpus}  > {log.out} 2> {log.err}
         """
 
 
